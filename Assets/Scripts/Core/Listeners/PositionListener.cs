@@ -17,14 +17,14 @@ public class PositionListener : MonoBehaviour
         set
         {
             _globalTime = value;
-//            InitBezier();
+            InitBezier();
 
             ChangeGlobalTime();
         }
     }
 
     [SerializeField]
-    [Range(0.0f, 3.0f)]
+    [Range(0.0f, 30.0f)]
     private float _globalTime;
     //Need update by listner
     void OnValidate()
@@ -39,7 +39,7 @@ public class PositionListener : MonoBehaviour
     public virtual void SetPosition(PositionData[] data)
     {
         Positions = data;
-//        InitBezier();
+        InitBezier();
     }
 
     private void ChangeGlobalTime()
@@ -54,13 +54,11 @@ public class PositionListener : MonoBehaviour
         }
         else
         {
-            float toDestinationLocalTime = nextPoint.Time - prevPoint.Time;
-            float currentLocalTime = GlobalTime - prevPoint.Time;
-            float currntTimeLine = currentLocalTime / toDestinationLocalTime;
-            transform.position = Vector3.Lerp(prevPoint.Position, nextPoint.Position, currntTimeLine);
-//            Debug.LogError(currntTimeLine);
-//            currntTimeLine = currntTimeLine / Positions.Length;
-//            transform.position = BezierSpline.GetPoint(currntTimeLine);
+            float oneTimeSize = 1f / (Positions.Length - 1);
+            float localLerpTime = (GlobalTime - prevPoint.Time) / (nextPoint.Time - prevPoint.Time);
+            float currntTimeLine = Mathf.Lerp(index * oneTimeSize, (index + 1) * oneTimeSize, localLerpTime);
+            transform.position = BezierSpline.GetPoint(currntTimeLine);
+            transform.LookAt(transform.position + BezierSpline.GetDirection(currntTimeLine));
         }
     }
 
@@ -92,27 +90,35 @@ public class PositionListener : MonoBehaviour
 
     private bool BezierInitied;
 
-//    private void InitBezier()
-//    {
-//        if(BezierInitied)
-//        {
-//            return;
-//        }
-//        Debug.LogError("InitBezier");
-//        BezierInitied = true;
-//        BezierSpline.points = new Vector3[Positions.Length * 3 - 2];
-//        BezierSpline.modes = new CatlikeBezierControlPointMode[(int)Mathf.Ceil((BezierSpline.points.Length + 1)/3f)];
-//
-//        for (int i = 0; i < Positions.Length; i++)
-//        {
-//            BezierSpline.SetControlPoint(i * 3, Positions[i].Position);
-//            if(i != 0 && i)
-//            {
-//                BezierSpline.points[i * 3 - 1] = Positions[i - 1].Position;
-//            }
-//
-//        }
-//    }
+    private void InitBezier()
+    {
+        if(BezierInitied)
+        {
+            return;
+        }
+        Debug.LogError("InitBezier");
+        BezierInitied = true;
+        BezierSpline.points = new Vector3[Positions.Length * 3 - 2];
+        BezierSpline.modes = new CatlikeBezierControlPointMode[(int)Mathf.Ceil((BezierSpline.points.Length + 1)/3f)];
+
+        for (int i = 0; i < Positions.Length; i++)
+        {
+            BezierSpline.SetControlPoint(i * 3, Positions[i].Position);
+            Vector3 currenControllPointPos = Positions[i].Position;
+
+            if(i != 0)
+            {
+                Vector3 preDirPos = BezierSpline.points[(i-1) * 3 + 1];
+                BezierSpline.points[i * 3 - 1] = Vector3.Lerp(preDirPos, currenControllPointPos, 0.66f);
+            }
+            if(i != 0 && i != Positions.Length - 1)
+            {
+                Vector3 toNextCPDistance = Positions[i+1].Position - currenControllPointPos;
+                Vector3 prev = (currenControllPointPos - BezierSpline.points[i * 3 - 1]).normalized;
+                BezierSpline.points[i * 3 + 1] = currenControllPointPos +( prev * (toNextCPDistance.magnitude / 3));
+            }
+        }
+    }
 }
 [System.Serializable]
 public class PositionData
