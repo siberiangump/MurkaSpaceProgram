@@ -8,37 +8,21 @@ public class ObjectFreeLookCamera : FreeLookCam
 
 	private bool StopRotation = false;
 	private Vector3 MousePos;
+	private Vector3 StartPivotPos;
 	private Camera RocketCam;
 
+	protected override void Start ()
+	{
+		base.Start ();
+		RocketCam = m_Cam.GetComponent <Camera> ();
+		StartPivotPos = m_Pivot.localPosition;
+	}
 	protected override void Update ()
 	{
 		base.Update ();
 
 		Zoom ();
-
-		if (Input.GetMouseButtonDown (2))
-			MousePos = Input.mousePosition;
-
-		if (Input.GetMouseButton (2)) 
-		{
-			StopRotation = true;
-			float x = CrossPlatformInputManager.GetAxis("Mouse X");
-			float y = CrossPlatformInputManager.GetAxis("Mouse Y");
-			//float moveVert = x * 
-			float yDiff =  Input.mousePosition.y - MousePos.y;
-			float xDiff =  Input.mousePosition.x - MousePos.x;
-			RocketCam = m_Cam.GetComponent <Camera> ();
-			Vector3 targetWorldPos =  new Vector3(xDiff,yDiff,0);
-			Vector3 targetPos = m_Pivot.InverseTransformPoint(new Vector3(targetWorldPos.x, targetWorldPos.y, m_Pivot.position.z));
-			m_Pivot.localPosition = Vector3.Lerp (m_Pivot.localPosition, targetPos, ZoomSetting.AxisMoveSpeed);
-
-
-			//m_Pivot.localPosition = new Vector3 (m_Pivot.localPosition.x, vertMovement , m_Pivot.localPosition.z);
-
-		}else 
-		{
-			StopRotation = false;
-		}
+		MoveCameraByMouse ();
 	}
 
 	protected override void HandleRotationMovement ()
@@ -52,7 +36,9 @@ public class ObjectFreeLookCamera : FreeLookCam
 	{
 		if (m_Target == null) return;
 		// Move the rig towards target position.
-		transform.position = m_Target.position; //Vector3.Lerp(transform.position, m_Target.position, deltaTime*m_MoveSpeed);
+		//Debug.LogError (transform.position.ToString() + " ||| " + m_Target.position.ToString());
+
+		transform.position = Vector3.Lerp(transform.position, m_Target.position, m_MoveSpeed);
 	}
 
 	private void Zoom () 
@@ -62,6 +48,37 @@ public class ObjectFreeLookCamera : FreeLookCam
 		zoom = Mathf.Clamp (zoom, ZoomSetting.Max, ZoomSetting.Min);
 		m_Pivot.localPosition = new Vector3 (m_Pivot.localPosition.x, m_Pivot.localPosition.y,zoom );
 	}
+
+	private void MoveCameraByMouse () 
+	{
+		if (Input.GetMouseButtonDown (2))
+			MousePos = Input.mousePosition;
+
+		if (Input.GetMouseButton (2)) 
+		{
+			StopRotation = true;
+			float x = CrossPlatformInputManager.GetAxis("Mouse X");
+			float y = CrossPlatformInputManager.GetAxis("Mouse Y");
+
+			float yDiff =  Input.mousePosition.y - MousePos.y;
+			float xDiff =  Input.mousePosition.x - MousePos.x;
+
+			Vector3 targetWorldPos =  new Vector3(xDiff,yDiff,0);
+			Vector3 targetPos = m_Pivot.InverseTransformPoint(new Vector3(targetWorldPos.x, targetWorldPos.y, m_Pivot.position.z));
+			m_Pivot.localPosition = Vector3.Lerp (m_Pivot.localPosition, targetPos, ZoomSetting.AxisMoveSpeed);
+		}else 
+		{
+			StopRotation = false;
+		}
+	}
+
+	public override void SetTarget (Transform newTransform)
+	{
+		base.SetTarget (newTransform);
+		transform.SetParent (m_Target);
+		m_Pivot.localPosition = StartPivotPos;
+	}
+
 
 	[System.Serializable]
 	private class ZoomSettings 

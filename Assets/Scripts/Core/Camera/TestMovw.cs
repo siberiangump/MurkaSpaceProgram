@@ -5,6 +5,13 @@ using UnityEngine;
 public class TestMovw : MonoBehaviour
 {
 	[SerializeField] private float Speed;
+	[SerializeField] private ObjectFreeLookCamera ObjCamera;
+
+
+	private void Start ()
+	{
+		SetTarget ();	
+	}
 
 	void Update () 
 	{
@@ -18,5 +25,11 @@ public class TestMovw : MonoBehaviour
 			transform.position= new Vector3 (transform.position.x- Speed, transform.position.y , transform.position.z);
 		if (Input.GetKey (KeyCode.D))
 			transform.position= new Vector3 (transform.position.x+ Speed, transform.position.y , transform.position.z);
+	}
+
+	[ContextMenu ("SetTarget")]
+	public void SetTarget () 
+	{
+		ObjCamera.SetTarget (transform);
 	}
 }
