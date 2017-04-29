@@ -17,17 +17,12 @@ public class ParseToObjectData : MonoBehaviour
     {
         StreamReader reader = File.OpenText(FileName);
         string line;
-        bool init = true;
+        Target.TrajectoryDataSet.Clear();
+        reader.ReadLine();
         while ((line = reader.ReadLine()) != null)
         {
-            if (init)
-            {
-                init = false;
-                continue;
-            }
-
             TransferTrajectoryData tmp = new TransferTrajectoryData();
-            string[] items = line.Split(new string[] { "   " }, StringSplitOptions.RemoveEmptyEntries);
+            string[] items = line.Split(new string[] { "  " }, StringSplitOptions.RemoveEmptyEntries);
             DateTime date;
             DateTime.TryParse(items[0], out date);
             tmp.UTCTime = date.ToFileTimeUtc();
@@ -37,6 +32,6 @@ public class ParseToObjectData : MonoBehaviour
 
             Target.TrajectoryDataSet.Add(tmp);
         }
-
+        UnityEditor.EditorUtility.SetDirty(Target);
     }
 }
