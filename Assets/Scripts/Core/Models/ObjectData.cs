@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class ObjectData
+[CreateAssetMenu (fileName = "ObjectData", menuName = "ScriptableObject/ObjectData", order = 1000000001)]
+public class ObjectData : ScriptableObject
 {
     public string Id;
-    public string PrefabId;
+    public GameObject PrefabId;
     public TransferTrajectoryData[] TrajectoryDataSet;
 }

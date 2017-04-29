@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectsDataManager : MonoBehaviour {
-
+public class ObjectsDataManager : MonoBehaviour
+{
+    [SerializeField] ObjectData[] Objects;
 }
