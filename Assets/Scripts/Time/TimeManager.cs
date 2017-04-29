@@ -4,43 +4,48 @@ using UnityEngine;
 using System;
 using UnityEngine.UI;
 
-public class TimeManager : MonoBehaviour
+public class TimeManager : Singleton<TimeManager>
 {
     public bool IsPaused { get; set; }
 
-    [SerializeField]
-    private float TimeflowSpeed;
-    [SerializeField]
-    private GlobalTimeData TimeData;
-    [SerializeField]
-    private TimelineSegmentsController Segments;
-    [SerializeField]
-    private Slider Slider;
-    [SerializeField]
-    private InputField SpeedInput;
-    [SerializeField]
-    private InputField PositionInput;
-    [SerializeField]
-    private Button PlayButton;
-    [SerializeField]
-    private Button PauseButton;
+    [SerializeField] private float TimeflowSpeed;
+    [SerializeField] private GlobalTimeData TimeData;
+    [SerializeField] private TimelineSegmentsController Segments;
+    [SerializeField] private Slider Slider;
+    [SerializeField] private InputField SpeedInput;
+    [SerializeField] private InputField PositionInput;
+    [SerializeField] private Button PlayButton;
+    [SerializeField] private Button PauseButton;
 
     private Action<float> OnTick;
+    private Action<long> OnTickUTC;
     private TimelineDragListener DragListener;
     private TimelineInputListener InputListener;
 
-    private float TimeValue
+    //private float TimeValue
+    //{
+    //    get
+    //    {
+    //        r
+    //    }
+    //}
+
+    private long UTCValue
     {
         get
         {
-            return Time.time;
+            return TimeData.StartTime + (long)((TimeData.EndTime - TimeData.StartTime)*Slider.value);
         }
     }
 
     void Start()
     {
+        TimeData.StartTime = long.MaxValue;
+        TimeData.EndTime = long.MinValue;
+
         SetTimeData(TimeData);
 
+        IsPaused = true;
         SpeedInput.text = TimeflowSpeed.ToString();
         SpeedInput.onValueChanged.AddListener(SetTimeflowSpeed);
         PositionInput.onValueChanged.AddListener(SetTime);
@@ -56,21 +61,38 @@ public class TimeManager : MonoBehaviour
         if (!IsPaused && !DragListener.IsDragging && !InputListener.IsEditing)
             Slider.value += Time.deltaTime * TimeflowSpeed;
              
-        if (OnTick != null)
-            OnTick(Slider.value);
+        if (OnTickUTC != null)
+            OnTickUTC(UTCValue);
+    }
+    
+    public void SubscribeOnTick(Action<long> func)
+    {
+        OnTickUTC += func;
     }
 
-    public void SubscribeOnTick(Action<float> func)
+    public void UnsubscribeOnTick(Action<long> func)
     {
-        OnTick += func;
+        OnTickUTC -= func;
     }
 
     public void SetTimeData(GlobalTimeData data)
     {
         TimeData = data;
         Segments.Initialize(TimeData);
-        Slider.minValue = data.StartTime;
-        Slider.maxValue = data.EndTime;
+        Slider.minValue = 0;
+        Slider.maxValue = 1;
+    }
+
+    public void SetStart(long startTime)
+    {
+        TimeData.StartTime = TimeData.StartTime > startTime ? startTime : TimeData.StartTime;
+        Segments.Initialize(TimeData);
+    }
+    
+    public void SetEnd(long endTime)
+    {
+        TimeData.EndTime = TimeData.EndTime < endTime ? endTime : TimeData.EndTime;
+        Segments.Initialize(TimeData);
     }
 
     public void SetTimeflowSpeed(string input)
@@ -84,10 +106,10 @@ public class TimeManager : MonoBehaviour
 
     public void SetTime(string input)
     {
-        float time;
-        if (float.TryParse(input, out time))
+        long current;
+        if (long.TryParse(input, out current))
         {
-            Slider.value = Mathf.Clamp(time, TimeData.StartTime, TimeData.EndTime);
+            Slider.value = Mathf.InverseLerp(TimeData.StartTime, TimeData.EndTime, current);
         }
     }
 }
@@ -95,7 +117,10 @@ public class TimeManager : MonoBehaviour
 [System.Serializable]
 public struct GlobalTimeData
 {
-    public float StartTime;
-    public float EndTime;
-    public float Step;
+    public long StartTime;
+    public long EndTime;
+    public long Step;
 }
+
+
+
