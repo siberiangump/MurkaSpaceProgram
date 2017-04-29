@@ -6,6 +6,6 @@ using UnityEngine;
 public class ObjectData : ScriptableObject
 {
     public string Id;
-    public GameObject PrefabId;
+    public SpaceObject Prefab;
     public TransferTrajectoryData[] TrajectoryDataSet;
 }
