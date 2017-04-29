@@ -5,8 +5,6 @@ using UnityEngine;
 [System.Serializable]
 public class TransferTrajectoryData
 {
-    public long UTCTime; 
-    public double X;
-    public double Y;
-    public double Z; 
+    public long UTCTime;
+    public Vector3 Position;
 }

@@ -26,9 +26,9 @@ public class ParseToObjectData : MonoBehaviour
             DateTime date;
             DateTime.TryParse(items[0], out date);
             tmp.UTCTime = date.ToFileTimeUtc();
-            Double.TryParse(items[1], out tmp.X);
-            Double.TryParse(items[2], out tmp.Y);
-            Double.TryParse(items[3], out tmp.Z);
+            float.TryParse(items[1], out tmp.Position.x);
+            float.TryParse(items[2], out tmp.Position.y);
+            float.TryParse(items[3], out tmp.Position.z);
 
             Target.TrajectoryDataSet.Add(tmp);
         }
