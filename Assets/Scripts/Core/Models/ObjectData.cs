@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,5 +7,5 @@ public class ObjectData : ScriptableObject
 {
     public string Id;
     public GameObject PrefabId;
-    public TransferTrajectoryData[] TrajectoryDataSet;
+    public List <TransferTrajectoryData> TrajectoryDataSet;
 }
