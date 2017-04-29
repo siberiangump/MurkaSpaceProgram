@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[CreateAssetMenu (fileName = "ItemsDictionaryData", menuName = "OfferConfig/ScriptableObject/ItemsDictionaryData", order = 1231527)]
+//[CreateAssetMenu (fileName = "ItemsDictionaryData", menuName = "ScriptableObject/ItemsDictionaryData", order = 1000)]
 public class ItemsDictionaryData : ScriptableObject
 {
     
