@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SpaceObject : MonoBehaviour
 {
-    [SerializeField] SimplePositionListener Position;
+    [SerializeField] PositionListener Position;
 
     public void Init(ObjectData data)
     {
