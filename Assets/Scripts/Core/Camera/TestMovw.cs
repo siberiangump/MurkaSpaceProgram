@@ -10,7 +10,7 @@ public class TestMovw : MonoBehaviour
 
 	private void Start ()
 	{
-		SetTarget ();	
+		//SetTarget ();	
 	}
 
 	void Update () 
