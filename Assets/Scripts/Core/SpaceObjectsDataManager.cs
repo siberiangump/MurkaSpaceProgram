@@ -21,9 +21,9 @@ public class SpaceObjectsDataManager : MonoBehaviour
     {
         
         ClearCurrent();
-        rootGameObject = new GameObject();
-        rootGameObject.name = "root";
-        rootGameObject.transform.position = new Vector3(Screen.width / 2, Screen.height / 2, 0f);
+        //rootGameObject = new GameObject();
+        //rootGameObject.name = "root";
+        //rootGameObject.transform.position = new Vector3(Screen.width / 2, Screen.height / 2, 0f);
         for (int i = 0; i < Objects.Length; i++)
         {
             InitObject(Objects[i]);
@@ -34,19 +34,19 @@ public class SpaceObjectsDataManager : MonoBehaviour
                 TimeManager.Instance.SetEnd(trajectoryData[trajectoryData.Count-1].UTCTime);
             }
         }  
-//        for (int i = 0; i < CurrentObjects.Count; i++)
-//        {
+//      for (int i = 0; i < CurrentObjects.Count; i++)
+//      {
 //            CurrentObjects[i].transform.localScale *= ObjectScale;
-//        }
-        rootGameObject.transform.localScale = Vector3.one * ObjectScale;
+//      }
+        //rootGameObject.transform.localScale = Vector3.one * ObjectScale;
     }
 
     private void InitObject(ObjectData data)
     {
-        SpaceObject spaceObject = Instantiate(data.Prefab);
+        SpaceObject spaceObject = Instantiate(data.Prefab, null);
         spaceObject.Init(data);
         CurrentObjects.Add(spaceObject);
-        spaceObject.transform.parent = rootGameObject.transform;
+        //spaceObject.transform.parent = rootGameObject.transform;
     }
 
     public void ClearCurrent()

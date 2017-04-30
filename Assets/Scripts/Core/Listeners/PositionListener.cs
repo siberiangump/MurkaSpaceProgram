@@ -111,7 +111,7 @@ public class PositionListener : MonoBehaviour
         if(BezierSpline==null)
         {
             BezierSpline = new GameObject().AddComponent<CatlikeBezierSpline>();
-            BezierSpline.transform.parent = null;
+            BezierSpline.transform.parent = null;//SpaceTimeParrametrs.Center;
             BezierSpline.transform.position = Vector3.zero;
         }
         if(BezierInitied)

@@ -25,7 +25,7 @@ public class ParseToObjectData : MonoBehaviour
             string[] items = line.Split(new string[] { "  " }, StringSplitOptions.RemoveEmptyEntries);
             DateTime date;
             DateTime.TryParse(items[0], out date);
-            tmp.UTCTime = (Int32)(date.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            tmp.UTCTime = (long)(date.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
             float.TryParse(items[1], out tmp.Position.x);
             float.TryParse(items[2], out tmp.Position.y);
             float.TryParse(items[3], out tmp.Position.z);
