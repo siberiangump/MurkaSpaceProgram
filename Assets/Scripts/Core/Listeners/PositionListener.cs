@@ -37,10 +37,6 @@ public class PositionListener : MonoBehaviour
     public virtual void SetPosition(List<TransferTrajectoryData> data)
     {
         Positions = data;
-//        for (int i = 0; i < data.Count; i++)
-//        {
-//            data[i].Position *= SpaceTimeParrametrs.ViewPositionScale;
-//        }
         InitBezier();
     }
 

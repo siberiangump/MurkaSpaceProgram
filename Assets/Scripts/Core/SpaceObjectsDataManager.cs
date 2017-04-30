@@ -8,6 +8,8 @@ public class SpaceObjectsDataManager : MonoBehaviour
 
     [SerializeField] List<SpaceObject> CurrentObjects; 
 
+    public const float ObjectScale = 0.5f;
+
     void Start()
     {
         Init();
@@ -23,10 +25,14 @@ public class SpaceObjectsDataManager : MonoBehaviour
             List<TransferTrajectoryData> trajectoryData =  Objects[i].TrajectoryDataSet;
             if(trajectoryData.Count>1)
             {
-            TimeManager.Instance.SetStart(trajectoryData[0].UTCTime);
-            TimeManager.Instance.SetEnd(trajectoryData[trajectoryData.Count-1].UTCTime);
+                TimeManager.Instance.SetStart(trajectoryData[0].UTCTime);
+                TimeManager.Instance.SetEnd(trajectoryData[trajectoryData.Count-1].UTCTime);
             }
         }  
+        for (int i = 0; i < CurrentObjects.Count; i++)
+        {
+            CurrentObjects[i].transform.localScale *= ObjectScale;
+        }
     }
 
     private void InitObject(ObjectData data)
