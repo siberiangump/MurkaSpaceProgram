@@ -6,6 +6,7 @@ public class PositionListener : MonoBehaviour
 {
     List<TransferTrajectoryData> Positions;
     public CatlikeBezierSpline BezierSpline;
+    public LineRenderer TrajectoryRenderer;
 
     private double GlobalTime
     {
@@ -28,7 +29,7 @@ public class PositionListener : MonoBehaviour
     //Need update by listner
     //void OnValidate()
     //{
-    //    if(Application.isPlaying)
+    //    if(Application.isPlaying)Position
     //    {
     //        GlobalTime = _globalTime;
     //    }
@@ -53,7 +54,7 @@ public class PositionListener : MonoBehaviour
         FindCurrentPositions(out prevPoint, out nextPoint, out index);
         if(nextPoint == null)
         {
-            transform.position = prevPoint.Position;
+            transform.localPosition = prevPoint.Position;
         }
         else
         {
@@ -61,8 +62,19 @@ public class PositionListener : MonoBehaviour
             float localLerpTime = (float)((GlobalTime - prevPoint.UTCTime) / (nextPoint.UTCTime - prevPoint.UTCTime));
             float currntTimeLine = Mathf.Lerp(index * oneTimeSize, (index + 1) * oneTimeSize, localLerpTime);
             //float currntTimeLine = Mathf.InverseLerp(nextPoint.UTCTime, prevPoint.UTCTime, GlobalTime); // currentLocalTime / toDestinationLocalTime;
-            transform.position = BezierSpline.GetPoint(currntTimeLine);///SpaceTimeParrametrs.Scale;
-            transform.LookAt(transform.position + BezierSpline.GetDirection(currntTimeLine));
+            transform.localPosition = BezierSpline.GetPoint(currntTimeLine);///SpaceTimeParrametrs.Scale;
+            transform.LookAt(transform.localPosition + BezierSpline.GetDirection(currntTimeLine));
+        }
+        if(TrajectoryRenderer != null)
+        {
+            Vector3[] positions = new Vector3[index + 1];
+            for (int i = 0; i < positions.Length; i++)
+            {
+                positions[i] = Positions[i].Position;
+            }
+            positions[positions.Length - 1] = transform.localPosition;
+            TrajectoryRenderer.positionCount = positions.Length;
+            TrajectoryRenderer.SetPositions(positions);
         }
     }
 

@@ -52,14 +52,14 @@ public class SimplePositionListener : MonoBehaviour
         FindCurrentPositions(out prevPoint, out nextPoint, out index);
         if(nextPoint == null)
         {
-            transform.position = prevPoint.Position;
+            transform.localPosition = prevPoint.Position;
         }
         else
         {
             //float toDestinationLocalTime = nextPoint.UTCTime - prevPoint.UTCTime;
             //float currentLocalTime = GlobalTime - prevPoint.UTCTime;
             float currntTimeLine = Mathf.InverseLerp(nextPoint.UTCTime, prevPoint.UTCTime, GlobalTime); // currentLocalTime / toDestinationLocalTime;
-            transform.position = Vector3.Lerp(prevPoint.Position, nextPoint.Position, currntTimeLine)/SpaceTimeParrametrs.Scale;
+            transform.localPosition = Vector3.Lerp(prevPoint.Position, nextPoint.Position, currntTimeLine)/SpaceTimeParrametrs.Scale;
 //            Debug.LogError(currntTimeLine);
 //            currntTimeLine = currntTimeLine / Positions.Length;
 //            transform.position = BezierSpline.GetPoint(currntTimeLine);
