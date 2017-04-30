@@ -7,7 +7,7 @@ public class PositionListener : MonoBehaviour
     List<TransferTrajectoryData> Positions;
     public CatlikeBezierSpline BezierSpline;
 
-    private long GlobalTime
+    private double GlobalTime
     {
         get
         {
@@ -24,7 +24,7 @@ public class PositionListener : MonoBehaviour
 
     //[SerializeField]
     //[Range(0.0f, 30.0f)]
-    private long _globalTime;
+    private double _globalTime;
     //Need update by listner
     //void OnValidate()
     //{
@@ -37,10 +37,14 @@ public class PositionListener : MonoBehaviour
     public virtual void SetPosition(List<TransferTrajectoryData> data)
     {
         Positions = data;
+//        for (int i = 0; i < data.Count; i++)
+//        {
+//            data[i].Position *= SpaceTimeParrametrs.ViewPositionScale;
+//        }
         InitBezier();
     }
 
-    public void OnTimeTick(long current)
+    public void OnTimeTick(double current)
     {
         GlobalTime = current;
     }
@@ -58,7 +62,7 @@ public class PositionListener : MonoBehaviour
         else
         {
             float oneTimeSize = 1f / (Positions.Count - 1);
-            float localLerpTime = (GlobalTime - prevPoint.UTCTime) / (nextPoint.UTCTime - prevPoint.UTCTime);
+            float localLerpTime = (float)((GlobalTime - prevPoint.UTCTime) / (nextPoint.UTCTime - prevPoint.UTCTime));
             float currntTimeLine = Mathf.Lerp(index * oneTimeSize, (index + 1) * oneTimeSize, localLerpTime);
             //float currntTimeLine = Mathf.InverseLerp(nextPoint.UTCTime, prevPoint.UTCTime, GlobalTime); // currentLocalTime / toDestinationLocalTime;
             transform.position = BezierSpline.GetPoint(currntTimeLine);///SpaceTimeParrametrs.Scale;

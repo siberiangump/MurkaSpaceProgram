@@ -18,7 +18,7 @@ public class TimeManager : Singleton<TimeManager>
     [SerializeField] private Button PauseButton;
 
     private Action<float> OnTick;
-    private Action<long> OnTickUTC;
+    private Action<double> OnTickUTC;
     private TimelineDragListener DragListener;
     private TimelineInputListener InputListener;
 
@@ -30,11 +30,11 @@ public class TimeManager : Singleton<TimeManager>
     //    }
     //}
 
-    private long UTCValue
+    private double UTCValue
     {
         get
         {
-            return TimeData.StartTime + (long)((TimeData.EndTime - TimeData.StartTime)*Slider.value);
+            return TimeData.StartTime + (double)((TimeData.EndTime - TimeData.StartTime)*Slider.value);
         }
     }
 
@@ -65,12 +65,12 @@ public class TimeManager : Singleton<TimeManager>
             OnTickUTC(UTCValue);
     }
     
-    public void SubscribeOnTick(Action<long> func)
+    public void SubscribeOnTick(Action<double> func)
     {
         OnTickUTC += func;
     }
 
-    public void UnsubscribeOnTick(Action<long> func)
+    public void UnsubscribeOnTick(Action<double> func)
     {
         OnTickUTC -= func;
     }
